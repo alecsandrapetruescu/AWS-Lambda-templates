@@ -7,8 +7,9 @@
 [Serverlessland Patterns](https://serverlessland.com/patterns)
 
 ### Example coverage
-* [Basic](lambda_handler_basic.py) with complementary [test](test_lambda_handler_basic.py)
-* [Basic with a touch JSON](lambda_handler_basic.py) with complementary [test](test_lambda_handler_basic_json.py)
-* [Basic with a touch REST](lambda_handler_rest.py) with complementary [test](test_lambda_handler_rest.py)
+* [Basic](sample/lambda_handler_basic.py) with complementary [test](tests/test_lambda_handler_basic.py)
+* [Basic with a touch JSON](sample/lambda_handler_basic.py) with
+  complementary [test](tests/test_lambda_handler_basic_json.py)
+* [Basic with a touch REST](sample/lambda_handler_rest.py) with complementary [test](tests/test_lambda_handler_rest.py)
 
 ### [Code of conduct](https://www.python.org/psf/conduct/)

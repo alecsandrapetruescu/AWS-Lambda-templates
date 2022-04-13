@@ -3,7 +3,7 @@ import json
 import pytest
 import logging
 
-import lambda_handler_rest
+from sample import lambda_handler_rest
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

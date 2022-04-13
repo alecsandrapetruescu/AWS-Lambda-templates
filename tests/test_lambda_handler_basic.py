@@ -1,7 +1,7 @@
 import pytest
 import logging
 
-import lambda_handler_basic
+from sample import lambda_handler_basic
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
