@@ -35,7 +35,7 @@ def http_method_dict(method):
 def response_error(http_status):
     return {
         str(HTTP.STATUS_CODE): http_status.value,
-        str(HTTP.BODY): json.dumps({'code': f"{http_status.value}", 'message': f"{http_status.phrase}",
+        str(HTTP.BODY): json.dumps({'code': http_status.value, 'message': f"{http_status.phrase}",
                                     'description': f"{http_status.description}"})
     }
 
@@ -52,14 +52,17 @@ def lambda_handler(event, context):
     logger.info('Event: %s', json.dumps(event))
 
     http_method = event.get(str(HTTP.HTTP_METHOD))
-    body = event.get(str(HTTP.BODY))
 
     method = http_method_dict(http_method)
     if method is None:
         return response_error(HTTPStatus.METHOD_NOT_ALLOWED)
 
+    body = event.get(str(HTTP.BODY))
+    if body is None:
+        return response_error(HTTPStatus.BAD_REQUEST)
+
     request_body = json.loads(body)
-    if request_body is None:
+    if len(request_body) == 0:
         return response_error(HTTPStatus.BAD_REQUEST)
 
     result = method(request_body.get('operation'), request_body.get('x'), request_body.get('y'))
