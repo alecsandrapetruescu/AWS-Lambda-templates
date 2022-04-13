@@ -1,3 +1,4 @@
+from http import HTTPStatus
 import json
 import logging
 from enum import Enum
@@ -18,13 +19,6 @@ class HTTP(Enum):
         return self.value
 
 
-# Define an ENUM with REST response codes
-class RESPONSE_CODE(Enum):
-    OK = 200
-    BAD_REQUEST = 404
-    METHOD_NOT_ALLOWED = 405
-
-
 # Define a dict of operations called by the AWS Lambda function.
 OPERATIONS = {
     'add': lambda first_operand, second_operand: first_operand + second_operand,
@@ -38,10 +32,11 @@ def http_method_dict(method):
     }.get(method, None)  # None will be returned as default if http method is not found
 
 
-def response_error(code, message):
+def response_error(http_status):
     return {
-        str(HTTP.STATUS_CODE): str(code),
-        str(HTTP.BODY): json.dumps({'message': f"{message}", 'code': f"Status code: {str(code)}."})
+        str(HTTP.STATUS_CODE): http_status.value,
+        str(HTTP.BODY): json.dumps({'code': f"{http_status.value}", 'message': f"{http_status.phrase}",
+                                    'description': f"{http_status.description}"})
     }
 
 
@@ -61,18 +56,18 @@ def lambda_handler(event, context):
 
     method = http_method_dict(http_method)
     if method is None:
-        return response_error(RESPONSE_CODE.METHOD_NOT_ALLOWED, 'The method specified is not allowed')
+        return response_error(HTTPStatus.METHOD_NOT_ALLOWED)
 
     request_body = json.loads(body)
     if request_body is None:
-        return response_error(RESPONSE_CODE.BAD_REQUEST, 'Bad request.')
+        return response_error(HTTPStatus.BAD_REQUEST)
 
     result = method(request_body.get('operation'), request_body.get('x'), request_body.get('y'))
 
     logger.info('Calculated result of %s', result)
 
     response = {
-        str(HTTP.STATUS_CODE): RESPONSE_CODE.OK.value,
+        str(HTTP.STATUS_CODE): HTTPStatus.OK.value,
         str(HTTP.BODY): json.dumps({'result': result})
     }
     return response
